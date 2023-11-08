@@ -11,9 +11,10 @@ import { useState } from 'react'
 
 export function Post ({author, publishedAt, content}) {
   const [comments, setComments] = useState([
-    1,
-    2,
+    'Post muito bacana'
   ])
+
+  const [newCommentText, setNewCommentText] = useState('')
 
   const publishedDateFormatted = format(publishedAt, "d 'de' LLL 'às' HH:mm'h'", 
   {
@@ -27,7 +28,13 @@ export function Post ({author, publishedAt, content}) {
 
   function handleCreateNewComment () {
     event.preventDefault()
-    setComments([...comments, comments.length ++]);
+
+    setComments([...comments, newCommentText])
+    setNewCommentText('')
+  }
+
+  function handleNewCommentChange () {
+    setNewCommentText(event.target.value)
   }
 
   return(
@@ -48,9 +55,9 @@ export function Post ({author, publishedAt, content}) {
       <div className={styles.contet}>
         {content.map(line => {
           if(line.type === 'paragraph'){
-            return <p>{line.content}</p>;
+            return <p key={line.content}>{line.content}</p>;
           } else if (line.type === 'link'){
-            return <p><a href="#">{line.content}</a></p>;
+            return <p key={line.content}><a href="#">{line.content}</a></p>;
           }
         })}
       </div>
@@ -59,7 +66,10 @@ export function Post ({author, publishedAt, content}) {
         <strong>Deixe seu feedback</strong>
 
         <textarea 
-        placeholder= "Deixe um comentario" 
+          name='comment'
+          placeholder= "Deixe um comentario"
+          value={newCommentText} 
+          onChange={handleNewCommentChange}
         />
 
         <footer>
@@ -69,7 +79,7 @@ export function Post ({author, publishedAt, content}) {
 
       <div className={styles.commentList}>
         {comments.map(comment => {
-          return <Comment />
+          return <Comment key={comment} content={comment} />
         })}
       </div>
     </article>
